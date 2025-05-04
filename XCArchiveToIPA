@@ -1,6 +1,19 @@
 use gym : https://docs.fastlane.tools/actions/build_ios_app/
 
+---------------------
+PROJECT=xxx
+ARCHIVE_PATH=/tmp/${PROJECT}.xcarchive
+EXPORT_PATH=/tmp/${PROJECT} # DIRECTORY
+mkdir -p $ARCHIVE_PATH
+xcodebuild -project ./${PROJECT}.xcodeproj -scheme ${SCHEME} archive -archivePath $ARCHIVE_PATH -verbose
 
+PLIST='{"compileBitcode":false,"method":"enterprise"}' # edit as needed
+
+EXPORT_PLIST=/tmp/${PROJECT}.plist
+echo $PLIST | plutil -convert xml1 -o $EXPORT_PLIST -
+
+xcodebuild -exportArchive -archivePath $ARCHIVE_PATH -exportPath $EXPORT_PATH -exportOptionsPlist $EXPORT_PLIST
+--------------------------------------
 lane :sign_xcarchive_and_publish do
   default_platform(:ios)
   sync_code_signing(
