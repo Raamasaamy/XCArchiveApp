@@ -1,6 +1,7 @@
 use gym : https://docs.fastlane.tools/actions/build_ios_app/
 
 ---------------------
+url: https://stackoverflow.com/questions/14934808/how-to-convert-xcarchive-to-ipa-for-client-to-submit-app-to-app-store-using-ap/26302794
 PROJECT=xxx
 ARCHIVE_PATH=/tmp/${PROJECT}.xcarchive
 EXPORT_PATH=/tmp/${PROJECT} # DIRECTORY
