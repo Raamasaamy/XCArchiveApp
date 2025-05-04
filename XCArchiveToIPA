@@ -1,0 +1,29 @@
+lane :sign_xcarchive_and_publish do
+  default_platform(:ios)
+  sync_code_signing(
+    type: "appstore"
+  )
+
+  # You must create a fake xcodeproj to pass in.
+  # This is needed to work around this issue in fastlane: https://github.com/fastlane/fastlane/issues/13528
+  # See also: https://github.com/fastlane/fastlane/issues/11402 and https://github.com/fastlane/fastlane/issues/15876
+  xcodeproj_path = File.expand_path("../fake.xcodeproj")
+  Xcodeproj::Project.new(xcodeproj_path).save
+
+  build_app(
+    configuration: "Release",
+    project: xcodeproj_path,
+    output_name: "MyOutput.ipa",
+    export_method: "app-store",
+    export_options: { iCloudContainerEnvironment: "Production" },
+    export_team_id: CredentialsManager::AppfileConfig.try_fetch_value(:team_id), # This requires the team_id to be set in the fastlane `Appfile`
+    skip_build_archive: true,
+    skip_package_dependencies_resolution: true,
+    archive_path: "MyArchiveName.xcarchive"
+ )
+
+  upload_to_testflight(
+    skip_submission: true,
+    skip_waiting_for_build_processing: true
+  )
+end
